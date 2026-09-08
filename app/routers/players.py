@@ -19,7 +19,7 @@ def list_players() -> list[dict]:
         raise_database_error(error)
 
 
-@router.get("/{player_id}", response_model=PlayerResponse)
+@router.get("/{player_id:uuid}", response_model=PlayerResponse)
 def read_player(player_id: UUID) -> dict:
     try:
         player = player_service.get_player(player_id)
@@ -29,6 +29,14 @@ def read_player(player_id: UUID) -> dict:
     if player is None:
         raise HTTPException(status_code=404, detail="Player not found")
     return player
+
+
+@router.get("/{name}", response_model=list[PlayerResponse])
+def search_players_by_name(name: str) -> list[dict]:
+    try:
+        return player_service.search_players_by_name(name)
+    except Exception as error:
+        raise_database_error(error)
 
 
 @router.get("/{player_id}/matches", response_model=list[MatchResponse])
