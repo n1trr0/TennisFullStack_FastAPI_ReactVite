@@ -41,3 +41,16 @@ class MatchResponse(BaseModel):
     loser_rank: int | None
     winner_rank_points: int | None
     loser_rank_points: int | None
+
+
+class TodayMatchResponse(BaseModel):
+    winner: str | None
+    winner_ioc3: str | None
+    loser: str | None
+    loser_ioc3: str | None
+    tournament_name: str | None
+    tournament_level: str | None
+    round: str | None
+    year: int | None
+    result: str | None
+    minutes: int | None
