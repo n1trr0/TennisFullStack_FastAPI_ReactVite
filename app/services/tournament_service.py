@@ -9,6 +9,12 @@ def get_tournaments() -> list[dict]:
     return supabase.table("tournaments").select(TOURNAMENT_COLUMNS).execute().data
 
 
+def get_tournament_names() -> list[str]:
+    data = supabase.table("tournaments").select("tourney_name").execute().data
+    names = {item["tourney_name"] for item in data if item.get("tourney_name")}
+    return sorted(names)
+
+
 def get_tournament(tournament_id: UUID) -> dict | None:
     data = (
         supabase.table("tournaments")

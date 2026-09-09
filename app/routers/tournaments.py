@@ -17,6 +17,14 @@ def list_tournaments() -> list[dict]:
         raise_database_error(error)
 
 
+@router.get("/name", response_model=list[str])
+def list_tournament_names() -> list[str]:
+    try:
+        return tournament_service.get_tournament_names()
+    except Exception as error:
+        raise_database_error(error)
+
+
 @router.get("/{tournament_id}", response_model=TournamentResponse)
 def read_tournament(tournament_id: UUID) -> dict:
     try:
