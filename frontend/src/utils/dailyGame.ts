@@ -11,10 +11,15 @@ export type DailyMatch = {
   minutes: number | null
 }
 
+export type TournamentOption = {
+  tourney_name: string
+  level: string | null
+}
+
 export type FieldKey = 'winner' | 'loser' | 'tournament_name' | 'round' | 'year'
 export type FieldState = 'correct' | 'present' | 'absent' | 'up' | 'down' | 'empty'
 
-export type DailyGuess = Record<FieldKey, string>
+export type DailyGuess = Record<FieldKey, string> & { tournament_level: string }
 
 export const FIELD_LABELS: Record<FieldKey, string> = {
   winner: 'Winner',
@@ -22,6 +27,10 @@ export const FIELD_LABELS: Record<FieldKey, string> = {
   tournament_name: 'Tournament',
   round: 'Round',
   year: 'Year',
+}
+
+export function formatTournamentOption(option: TournamentOption) {
+  return `${option.tourney_name} (${option.level ?? 'ATP'})`
 }
 
 export const FIELD_KEYS: FieldKey[] = ['winner', 'loser', 'tournament_name', 'round', 'year']
@@ -59,4 +68,8 @@ export function evaluateGuess(guess: DailyGuess, match: DailyMatch) {
     states[key] = evaluateField(key, guess[key], getMatchValue(match, key))
     return states
   }, {} as Record<FieldKey, FieldState>)
+}
+
+export function evaluateTournamentLevel(guess: DailyGuess, match: DailyMatch) {
+  return evaluateField('tournament_name', guess.tournament_level, match.tournament_level)
 }

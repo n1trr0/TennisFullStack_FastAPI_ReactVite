@@ -242,7 +242,7 @@ button:disabled, input:disabled { cursor: not-allowed; opacity: .55; }
 
 /* Structured daily match guesses */
 .guess-board { width: min(100%, 700px); display: grid; gap: 7px; }
-.board-header, .attempt-row { display: grid; grid-template-columns: 1.35fr 1.35fr 1.6fr 1fr .7fr; gap: 7px; }
+.board-header, .attempt-row { display: grid; grid-template-columns: 1.2fr 1.2fr 2.4fr 1.35fr .9fr 1.1fr; gap: 7px; }
 .board-header { padding: 0 13px 5px; color: var(--muted); font: 9px 'DM Mono', monospace; letter-spacing: .06em; text-transform: uppercase; }
 .attempt-cell { min-width: 0; min-height: 51px; display: flex; align-items: center; justify-content: space-between; gap: 5px; padding: 8px 11px; border: 1px solid var(--line-strong); color: var(--ink); background: rgba(255,253,247,.55); font: 600 12px 'Space Grotesk', sans-serif; text-transform: capitalize; }
 .attempt-cell span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -254,11 +254,19 @@ button:disabled, input:disabled { cursor: not-allowed; opacity: .55; }
 .attempt-cell.up b, .attempt-cell.down b { color: var(--orange); }
 .empty-board { padding: 20px; border: 1px dashed var(--line-strong); color: var(--muted); font: 11px 'DM Mono', monospace; text-align: center; }
 .guess-form { width: min(100%, 700px); display: grid; gap: 14px; margin-top: 25px; }
-.guess-fields { display: grid; grid-template-columns: 1.35fr 1.35fr 1.6fr 1fr .7fr; gap: 7px; }
+.guess-fields { display: grid; grid-template-columns: 1.2fr 1.2fr 2.4fr 1.1fr 1.1fr; gap: 7px; }
 .guess-field { display: grid; gap: 7px; }
 .guess-field > span { color: var(--muted); font: 9px 'DM Mono', monospace; letter-spacing: .06em; text-transform: uppercase; }
 .guess-field input { width: 100%; min-width: 0; padding: 12px 10px; border: 1px solid var(--line-strong); border-radius: 0; outline: none; color: var(--ink); background: rgba(255,253,247,.7); font: 12px 'Space Grotesk', sans-serif; }
 .guess-field input:focus { border-color: var(--green); box-shadow: 3px 3px 0 var(--yellow); }
+.tournament-autocomplete { position: relative; }
+.tournament-suggestions { position: absolute; z-index: 5; top: calc(100% + 5px); left: 0; right: 0; max-height: 220px; overflow-y: auto; border: 1px solid var(--line-strong); background: var(--paper); box-shadow: 5px 5px 0 var(--yellow); }
+.tournament-suggestion { width: 100%; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 11px 12px; border: 0; border-bottom: 1px solid var(--line); color: var(--ink); background: transparent; cursor: pointer; font: 12px 'Space Grotesk', sans-serif; text-align: left; }
+.tournament-suggestion:last-child { border-bottom: 0; }
+.tournament-suggestion:hover, .tournament-suggestion:focus-visible { color: var(--paper); background: var(--green); outline: none; }
+.tournament-suggestion small { flex: 0 0 auto; color: var(--orange); font: 10px 'DM Mono', monospace; }
+.tournament-suggestion:hover small, .tournament-suggestion:focus-visible small { color: var(--yellow); }
+.no-tournament-suggestions { margin: 0; padding: 13px 12px; color: var(--muted); font: 10px 'DM Mono', monospace; }
 .guess-form > button { justify-self: start; padding: 13px 17px; border: 0; border-radius: 0; color: var(--paper); background: var(--green); cursor: pointer; font: 11px 'DM Mono', monospace; letter-spacing: .05em; text-transform: uppercase; transition: .16s ease; }
 .guess-form > button span, .play-again span { margin-left: 8px; color: var(--yellow); font-size: 16px; }
 .guess-form > button:hover:not(:disabled), .play-again:hover { background: var(--ink); transform: translateY(-2px); }

@@ -15,6 +15,19 @@ def get_tournament_names() -> list[str]:
     return sorted(names)
 
 
+def get_tournament_names_and_levels() -> list[dict]:
+    data = supabase.table("tournaments").select("tourney_name,level").execute().data
+    pairs = {
+        (item["tourney_name"], item.get("level"))
+        for item in data
+        if item.get("tourney_name")
+    }
+    return [
+        {"tourney_name": name, "level": level}
+        for name, level in sorted(pairs, key=lambda pair: (pair[0], pair[1] or ""))
+    ]
+
+
 def get_tournament(tournament_id: UUID) -> dict | None:
     data = (
         supabase.table("tournaments")

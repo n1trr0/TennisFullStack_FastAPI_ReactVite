@@ -4,13 +4,14 @@ import { Link } from 'react-router-dom'
 import { DailyGuessBoard } from '../components/DailyGuessBoard'
 import { DailyGuessForm } from '../components/DailyGuessForm'
 import { MatchCard } from '../components/MatchCard'
-import { FIELD_KEYS, evaluateGuess, type DailyGuess, type DailyMatch, type FieldKey } from '../utils/dailyGame'
+import { FIELD_KEYS, evaluateGuess, normalize, type DailyGuess, type DailyMatch, type FieldKey, type TournamentOption } from '../utils/dailyGame'
 
 const MAX_GUESSES = 6
-const emptyGuess = (): DailyGuess => ({ winner: '', loser: '', tournament_name: '', round: '', year: '' })
+const emptyGuess = (): DailyGuess => ({ winner: '', loser: '', tournament_name: '', tournament_level: '', round: '', year: '' })
 
 export function DailyGamePage() {
   const [match, setMatch] = useState<DailyMatch | null>(null)
+  const [tournamentOptions, setTournamentOptions] = useState<TournamentOption[]>([])
   const [guess, setGuess] = useState<DailyGuess>(emptyGuess)
   const [guesses, setGuesses] = useState<DailyGuess[]>([])
   const [message, setMessage] = useState('')
@@ -18,12 +19,20 @@ export function DailyGamePage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    fetch('/api/matches/today')
-      .then((response) => {
+    Promise.all([
+      fetch('/api/matches/today').then((response) => {
         if (!response.ok) throw new Error('Could not load today\'s match')
         return response.json() as Promise<DailyMatch>
+      }),
+      fetch('/api/tournaments/name/level').then((response) => {
+        if (!response.ok) throw new Error('Could not load tournaments')
+        return response.json() as Promise<TournamentOption[]>
+      }),
+    ])
+      .then(([todayMatch, tournaments]) => {
+        setMatch(todayMatch)
+        setTournamentOptions(tournaments)
       })
-      .then(setMatch)
       .catch(() => setError('The daily match could not be loaded.'))
       .finally(() => setLoading(false))
   }, [])
@@ -32,14 +41,15 @@ export function DailyGamePage() {
   if (error || !match) return <main className="page-state"><p>{error || 'No match available today.'}</p><Link className="text-link" to="/dailygame">Try again</Link></main>
 
   const results = guesses.map((item) => evaluateGuess(item, match))
-  const won = results.some((result) => FIELD_KEYS.every((key) => result[key] === 'correct'))
+  const won = results.some((result, index) => FIELD_KEYS.every((key) => result[key] === 'correct') && guesses[index].tournament_level === match.tournament_level)
   const lost = guesses.length >= MAX_GUESSES && !won
   const gameOver = won || lost
 
   function submitGuess(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (gameOver) return
-    if (FIELD_KEYS.some((key) => !guess[key].trim())) {
+    const selectedTournament = tournamentOptions.some((option) => normalize(option.tourney_name) === normalize(guess.tournament_name) && (option.level ?? '') === guess.tournament_level)
+    if (FIELD_KEYS.some((key) => !guess[key].trim()) || !selectedTournament) {
       setMessage('Complete all five fields before checking your attempt.')
       return
     }
@@ -76,7 +86,7 @@ export function DailyGamePage() {
           <p className="intro">Fill in the five clues. Green is exact, yellow is close, and red is off the mark.</p>
           <div className="game-meta"><span><strong>{guesses.length}</strong> / {MAX_GUESSES} attempts</span><span className="meta-divider" /><span>5 clues per attempt</span></div>
           <DailyGuessBoard guesses={guesses} match={match} />
-          {!gameOver && <DailyGuessForm guess={guess} disabled={gameOver} onChange={updateGuess} onSubmit={submitGuess} />}
+          {!gameOver && <DailyGuessForm guess={guess} disabled={gameOver} onChange={updateGuess} tournamentOptions={tournamentOptions} onSubmit={submitGuess} />}
           <p className={`message ${message ? 'visible' : ''}`}>{message || ' '}</p>
           {gameOver && <button className="play-again" type="button" onClick={resetGame}>Play again <span aria-hidden="true">↻</span></button>}
         </section>

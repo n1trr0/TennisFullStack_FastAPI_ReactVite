@@ -15,3 +15,8 @@ class TournamentResponse(BaseModel):
     end_date: date | None
     start_date: date | None
     year: int
+
+
+class TournamentNameLevelResponse(BaseModel):
+    tourney_name: str
+    level: str | None

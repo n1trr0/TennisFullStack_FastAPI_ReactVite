@@ -3,7 +3,7 @@ from uuid import UUID
 from fastapi import APIRouter, HTTPException
 
 from app.routers._errors import raise_database_error
-from app.schemas.tournament import TournamentResponse
+from app.schemas.tournament import TournamentNameLevelResponse, TournamentResponse
 from app.services import tournament_service
 
 router = APIRouter(prefix="/tournaments", tags=["Tournaments"])
@@ -21,6 +21,14 @@ def list_tournaments() -> list[dict]:
 def list_tournament_names() -> list[str]:
     try:
         return tournament_service.get_tournament_names()
+    except Exception as error:
+        raise_database_error(error)
+
+
+@router.get("/name/level", response_model=list[TournamentNameLevelResponse])
+def list_tournament_names_and_levels() -> list[dict]:
+    try:
+        return tournament_service.get_tournament_names_and_levels()
     except Exception as error:
         raise_database_error(error)
 
