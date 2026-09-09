@@ -85,14 +85,14 @@ export function DailyGamePage() {
           <h1>Read the<br /><em>match point.</em></h1>
           <p className="intro">Fill in the five clues. Green is exact, yellow is close, and red is off the mark.</p>
           <div className="game-meta"><span><strong>{guesses.length}</strong> / {MAX_GUESSES} attempts</span><span className="meta-divider" /><span>5 clues per attempt</span></div>
-          <DailyGuessBoard guesses={guesses} match={match} />
+          <DailyGuessBoard guesses={guesses} match={match} revealed={gameOver} />
           {!gameOver && <DailyGuessForm guess={guess} disabled={gameOver} onChange={updateGuess} tournamentOptions={tournamentOptions} onSubmit={submitGuess} />}
           <p className={`message ${message ? 'visible' : ''}`}>{message || ' '}</p>
           {gameOver && <button className="play-again" type="button" onClick={resetGame}>Play again <span aria-hidden="true">↻</span></button>}
         </section>
-        <MatchCard match={match} revealed={gameOver} won={won} lost={lost} />
       </main>
       <footer className="footer"><span>ONE MATCH. ONE DAY.</span><span>Powered by the tour archive</span></footer>
+      {gameOver && <MatchCard match={match} revealed={gameOver} won={won} lost={lost} onClose={resetGame} />}
     </div>
   )
 }

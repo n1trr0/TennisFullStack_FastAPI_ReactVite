@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from 'react'
-import { FIELD_KEYS, FIELD_LABELS, formatTournamentOption, normalize, type DailyGuess, type FieldKey, type TournamentOption } from '../utils/dailyGame'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { FIELD_KEYS, FIELD_LABELS, formatTournamentOption, normalize, type DailyGuess, type FieldKey, type PlayerOption, type TournamentOption } from '../utils/dailyGame'
 
 type DailyGuessFormProps = {
   guess: DailyGuess
@@ -7,6 +7,91 @@ type DailyGuessFormProps = {
   onChange: (key: FieldKey, value: string) => void
   tournamentOptions: TournamentOption[]
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
+}
+
+type PlayerFieldProps = {
+  field: 'winner' | 'loser'
+  value: string
+  disabled: boolean
+  onChange: (key: FieldKey, value: string) => void
+}
+
+function PlayerAutocomplete({ field, value, disabled, onChange }: PlayerFieldProps) {
+  const [options, setOptions] = useState<PlayerOption[]>([])
+  const [isOpen, setIsOpen] = useState(false)
+  const [selectedName, setSelectedName] = useState('')
+  const [searchError, setSearchError] = useState('')
+  const requestId = useRef(0)
+
+  useEffect(() => {
+    setSelectedName('')
+    setOptions([])
+    setSearchError('')
+    const query = value.trim()
+    if (query.length < 2) {
+      setIsOpen(false)
+      return
+    }
+
+    const currentRequest = ++requestId.current
+    const timer = window.setTimeout(() => {
+      const controller = new AbortController()
+      fetch(`/api/players/${encodeURIComponent(query)}`, { signal: controller.signal })
+        .then((response) => {
+          if (!response.ok) throw new Error('Could not search players')
+          return response.json() as Promise<PlayerOption[]>
+        })
+        .then((players) => {
+          if (currentRequest !== requestId.current) return
+          setOptions(players)
+          setSearchError('')
+          setIsOpen(true)
+        })
+        .catch((error: unknown) => {
+          if (error instanceof DOMException && error.name === 'AbortError') return
+          if (currentRequest === requestId.current) setSearchError('Could not search players.')
+        })
+      return () => controller.abort()
+    }, 750)
+
+    return () => window.clearTimeout(timer)
+  }, [value])
+
+  function updateValue(nextValue: string) {
+    setSelectedName('')
+    onChange(field, nextValue)
+    setIsOpen(true)
+  }
+
+  function selectPlayer(player: PlayerOption) {
+    setSelectedName(player.name_full)
+    onChange(field, player.name_full)
+    setIsOpen(false)
+  }
+
+  return (
+    <div className="player-autocomplete">
+      <input
+        value={value}
+        onChange={(event) => updateValue(event.target.value)}
+        onFocus={() => value.trim().length >= 2 && setIsOpen(true)}
+        placeholder={`Enter ${field}`}
+        disabled={disabled}
+        autoComplete="off"
+        role="combobox"
+        aria-expanded={isOpen}
+      />
+      {isOpen && !disabled && !selectedName && value.trim().length >= 2 && (
+        <div className="player-suggestions" role="listbox">
+          {searchError ? <p className="no-player-suggestions">{searchError}</p> : options.length > 0 ? options.map((player) => (
+            <button className="player-suggestion" type="button" role="option" key={`${player.name_full}-${player.ioc3 ?? ''}`} onMouseDown={(event) => event.preventDefault()} onClick={() => selectPlayer(player)}>
+              <span>{player.name_full}</span><small>{player.ioc3 ?? '—'}</small>
+            </button>
+          )) : <p className="no-player-suggestions">No players found</p>}
+        </div>
+      )}
+    </div>
+  )
 }
 
 export function DailyGuessForm({ guess, disabled, onChange, tournamentOptions, onSubmit }: DailyGuessFormProps) {
@@ -31,7 +116,9 @@ export function DailyGuessForm({ guess, disabled, onChange, tournamentOptions, o
         {FIELD_KEYS.map((key) => (
           <label className={`guess-field ${key === 'year' ? 'year-field' : ''}`} key={key}>
             <span>{FIELD_LABELS[key]}</span>
-            {key === 'tournament_name' ? (
+            {key === 'winner' || key === 'loser' ? (
+              <PlayerAutocomplete field={key} value={guess[key]} disabled={disabled} onChange={onChange} />
+            ) : key === 'tournament_name' ? (
               <div className="tournament-autocomplete">
                 <input
                   value={guess[key]}

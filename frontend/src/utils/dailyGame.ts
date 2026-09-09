@@ -16,6 +16,11 @@ export type TournamentOption = {
   level: string | null
 }
 
+export type PlayerOption = {
+  name_full: string
+  ioc3: string | null
+}
+
 export type FieldKey = 'winner' | 'loser' | 'tournament_name' | 'round' | 'year'
 export type FieldState = 'correct' | 'present' | 'absent' | 'up' | 'down' | 'empty'
 
