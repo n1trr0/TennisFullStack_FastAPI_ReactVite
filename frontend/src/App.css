@@ -266,6 +266,14 @@ button:disabled, input:disabled { cursor: not-allowed; opacity: .55; }
 .guess-field > span { color: var(--muted); font: 9px 'DM Mono', monospace; letter-spacing: .06em; text-transform: uppercase; }
 .guess-field input { width: 100%; min-width: 0; padding: 12px 10px; border: 1px solid var(--line-strong); border-radius: 0; outline: none; color: var(--ink); background: rgba(255,253,247,.7); font: 12px 'Space Grotesk', sans-serif; }
 .guess-field input:focus { border-color: var(--green); box-shadow: 3px 3px 0 var(--yellow); }
+.player-autocomplete { position: relative; }
+.player-suggestions { position: absolute; z-index: 5; top: calc(100% + 5px); left: 0; right: 0; max-height: 220px; overflow-y: auto; border: 1px solid var(--line-strong); background: var(--paper); box-shadow: 5px 5px 0 var(--yellow); }
+.player-suggestion { width: 100%; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 11px 12px; border: 0; border-bottom: 1px solid var(--line); color: var(--ink); background: transparent; cursor: pointer; font: 12px 'Space Grotesk', sans-serif; text-align: left; }
+.player-suggestion:last-child { border-bottom: 0; }
+.player-suggestion:hover, .player-suggestion:focus-visible { color: var(--paper); background: var(--green); outline: none; }
+.player-suggestion small { flex: 0 0 auto; color: var(--orange); font: 10px 'DM Mono', monospace; }
+.player-suggestion:hover small, .player-suggestion:focus-visible small { color: var(--yellow); }
+.no-player-suggestions { margin: 0; padding: 13px 12px; color: var(--muted); font: 10px 'DM Mono', monospace; }
 .tournament-autocomplete { position: relative; }
 .tournament-suggestions { position: absolute; z-index: 5; top: calc(100% + 5px); left: 0; right: 0; max-height: 220px; overflow-y: auto; border: 1px solid var(--line-strong); background: var(--paper); box-shadow: 5px 5px 0 var(--yellow); }
 .tournament-suggestion { width: 100%; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 11px 12px; border: 0; border-bottom: 1px solid var(--line); color: var(--ink); background: transparent; cursor: pointer; font: 12px 'Space Grotesk', sans-serif; text-align: left; }

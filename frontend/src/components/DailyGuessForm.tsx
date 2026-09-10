@@ -93,7 +93,7 @@ function PlayerAutocomplete({ field, value, disabled, onChange }: PlayerFieldPro
       />
       {isOpen && !disabled && !selectedName && value.trim().length >= 2 && (
         <div className="player-suggestions" role="listbox">
-          {searchError ? <p className="no-player-suggestions">{searchError}</p> : options.length > 0 ? options.map((player) => (
+          {searchError ? <p className="no-player-suggestions">{searchError}</p> : options.length > 0 ? options.slice(0, 10).map((player) => (
             <button className="player-suggestion" type="button" role="option" key={`${player.name_full}-${player.ioc3 ?? ''}`} onMouseDown={(event) => event.preventDefault()} onClick={() => selectPlayer(player)}>
               <span>{player.name_full}</span><small>{player.ioc3 ?? '—'}</small>
             </button>
@@ -153,7 +153,7 @@ export function DailyGuessForm({ guess, disabled, onChange, tournamentOptions, o
                 />
                 {isTournamentListOpen && !disabled && (
                   <div className="tournament-suggestions" id="tournament-suggestions" role="listbox">
-                    {filteredTournaments.length > 0 ? filteredTournaments.map((option) => (
+                    {filteredTournaments.length > 0 ? filteredTournaments.slice(0, 10).map((option) => (
                       <button
                         className="tournament-suggestion"
                         type="button"
