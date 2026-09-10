@@ -14,6 +14,7 @@ export function DailyGamePage() {
   const [tournamentOptions, setTournamentOptions] = useState<TournamentOption[]>([])
   const [guess, setGuess] = useState<DailyGuess>(emptyGuess)
   const [guesses, setGuesses] = useState<DailyGuess[]>([])
+  const [isMatchCardClosed, setIsMatchCardClosed] = useState(false)
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -69,7 +70,12 @@ export function DailyGamePage() {
   function resetGame() {
     setGuesses([])
     setGuess(emptyGuess())
+    setIsMatchCardClosed(false)
     setMessage('')
+  }
+
+  function closeMatchCard() {
+    setIsMatchCardClosed(true)
   }
 
   return (
@@ -92,7 +98,7 @@ export function DailyGamePage() {
         </section>
       </main>
       <footer className="footer"><span>ONE MATCH. ONE DAY.</span><span>Powered by the tour archive</span></footer>
-      {gameOver && <MatchCard match={match} revealed={gameOver} won={won} lost={lost} onClose={resetGame} />}
+      {gameOver && !isMatchCardClosed && <MatchCard match={match} revealed={gameOver} won={won} lost={lost} onClose={closeMatchCard} />}
     </div>
   )
 }
