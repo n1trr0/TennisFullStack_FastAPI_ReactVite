@@ -195,7 +195,7 @@
 .slash { color: var(--orange); }
 .icon-button { display: grid; width: 36px; height: 36px; padding: 0; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--green); background: transparent; cursor: pointer; font-size: 20px; transition: .16s ease; }
 .icon-button:hover { color: var(--paper); background: var(--green); transform: rotate(-25deg); }
-.game-layout { flex: 1; display: block; width: min(1460px, calc(100% - 64px)); padding-top: 76px; padding-bottom: 72px; }
+.game-layout { flex: 1; display: block; width: min(1180px, calc(100% - 64px)); padding-top: 76px; padding-bottom: 72px; }
 .game-column { width: 100%; max-width: none; }
 .eyebrow { display: inline-flex; align-items: center; gap: 9px; color: var(--orange); font-size: 10px; }
 .eyebrow::before { content: ''; width: 26px; height: 1px; background: var(--orange); }
