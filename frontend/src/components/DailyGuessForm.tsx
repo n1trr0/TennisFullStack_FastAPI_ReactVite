@@ -21,7 +21,17 @@ function PlayerAutocomplete({ field, value, disabled, onChange }: PlayerFieldPro
   const [isOpen, setIsOpen] = useState(false)
   const [selectedName, setSelectedName] = useState('')
   const [searchError, setSearchError] = useState('')
+  const containerRef = useRef<HTMLDivElement>(null)
   const requestId = useRef(0)
+
+  useEffect(() => {
+    function closeOnOutsidePointer(event: PointerEvent) {
+      if (!containerRef.current?.contains(event.target as Node)) setIsOpen(false)
+    }
+
+    document.addEventListener('pointerdown', closeOnOutsidePointer)
+    return () => document.removeEventListener('pointerdown', closeOnOutsidePointer)
+  }, [])
 
   useEffect(() => {
     setSelectedName('')
@@ -70,7 +80,7 @@ function PlayerAutocomplete({ field, value, disabled, onChange }: PlayerFieldPro
   }
 
   return (
-    <div className="player-autocomplete">
+    <div className="player-autocomplete" ref={containerRef}>
       <input
         value={value}
         onChange={(event) => updateValue(event.target.value)}
@@ -96,7 +106,17 @@ function PlayerAutocomplete({ field, value, disabled, onChange }: PlayerFieldPro
 
 export function DailyGuessForm({ guess, disabled, onChange, tournamentOptions, onSubmit }: DailyGuessFormProps) {
   const [isTournamentListOpen, setIsTournamentListOpen] = useState(false)
+  const tournamentContainerRef = useRef<HTMLDivElement>(null)
   const filteredTournaments = tournamentOptions.filter((option) => normalize(formatTournamentOption(option)).includes(normalize(guess.tournament_name)))
+
+  useEffect(() => {
+    function closeOnOutsidePointer(event: PointerEvent) {
+      if (!tournamentContainerRef.current?.contains(event.target as Node)) setIsTournamentListOpen(false)
+    }
+
+    document.addEventListener('pointerdown', closeOnOutsidePointer)
+    return () => document.removeEventListener('pointerdown', closeOnOutsidePointer)
+  }, [])
 
   function updateTournamentName(value: string) {
     onChange('tournament_name', value)
@@ -119,7 +139,7 @@ export function DailyGuessForm({ guess, disabled, onChange, tournamentOptions, o
             {key === 'winner' || key === 'loser' ? (
               <PlayerAutocomplete field={key} value={guess[key]} disabled={disabled} onChange={onChange} />
             ) : key === 'tournament_name' ? (
-              <div className="tournament-autocomplete">
+              <div className="tournament-autocomplete" ref={tournamentContainerRef}>
                 <input
                   value={guess[key]}
                   onChange={(event) => updateTournamentName(event.target.value)}
