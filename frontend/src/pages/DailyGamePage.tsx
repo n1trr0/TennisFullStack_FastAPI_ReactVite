@@ -20,6 +20,10 @@ export function DailyGamePage() {
   const [error, setError] = useState('')
 
   useEffect(() => {
+    document.title = 'Match Point | Juego diario'
+  }, [])
+
+  useEffect(() => {
     Promise.all([
       fetch('/api/matches/today').then((response) => {
         if (!response.ok) throw new Error('Could not load today\'s match')

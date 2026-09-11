@@ -1,6 +1,11 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 export function HomePage() {
+  useEffect(() => {
+    document.title = 'Match Point | Inicio'
+  }, [])
+
   return (
     <main className="home-page">
       <span className="eyebrow">MATCH POINT</span>
