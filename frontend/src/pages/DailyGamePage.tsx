@@ -91,7 +91,7 @@ export function DailyGamePage() {
       </header>
       <main className="game-layout">
         <section className="game-column">
-          <div className="eyebrow">TODAY&apos;S MATCH · {match.tournament_level ?? 'ATP'}</div>
+          <div className="eyebrow">TODAY&apos;S MATCH · {match.result ?? 'ATP'}</div>
           <h1>Read the<br /><em>match point.</em></h1>
           <p className="intro">Fill in the five clues. Green is exact, yellow is close, and red is off the mark.</p>
           <div className="game-meta"><span><strong>{guesses.length}</strong> / {MAX_GUESSES} attempts</span><span className="meta-divider" /><span>5 clues per attempt</span></div>
