@@ -1,6 +1,32 @@
 from app.database import supabase
 
 
+EUROPEAN_IOC3 = {
+    "AUT", "BEL", "BIH", "BLR", "BUL", "CRO", "CYP", "CZE", "DEN",
+    "ESP", "EST", "FIN", "FRA", "GBR", "GEO", "GER", "GRE", "HUN",
+    "IRL", "ISL", "ITA", "KAZ", "LAT", "LTU", "LUX", "MDA", "MKD",
+    "MNE", "NED", "NOR", "POL", "POR", "ROU", "RUS", "SLO", "SRB",
+    "SUI", "SVK", "SWE", "TUR", "UKR",
+}
+
+SOUTH_AMERICAN_IOC3 = {
+    "ARG", "BOL", "BRA", "CHI", "COL", "ECU", "GUY", "PAR", "PER",
+    "SUR", "URU", "VEN",
+}
+
+
+def get_region(ioc3: str) -> str:
+    if ioc3 == "USA":
+        return "USA"
+    if ioc3 == "AUS":
+        return "Australia"
+    if ioc3 in SOUTH_AMERICAN_IOC3:
+        return "South America"
+    if ioc3 in EUROPEAN_IOC3:
+        return "Europe"
+    return "Other"
+
+
 def get_grand_slam_winners() -> list[dict]:
     tournaments = (
         supabase.table("tournaments")
@@ -46,6 +72,7 @@ def get_grand_slam_winners() -> list[dict]:
                 "torneo": tournament["tourney_name"],
                 "año": tournament["year"],
                 "ioc3": player["ioc3"],
+                "region": get_region(player["ioc3"]),
             }
         )
 
