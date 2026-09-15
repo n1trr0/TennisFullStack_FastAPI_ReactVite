@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 
 from app.database import supabase
-from app.routers import matches, players, rankings, tournaments
+from app.routers import matches, players, rankings, tournaments, winners
 
 app = FastAPI(title="Tennis API", version="0.1.0")
 
@@ -9,6 +9,7 @@ app.include_router(players.router)
 app.include_router(matches.router)
 app.include_router(tournaments.router)
 app.include_router(rankings.router)
+app.include_router(winners.router)
 
 
 @app.get("/")
